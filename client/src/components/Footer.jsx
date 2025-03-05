@@ -9,7 +9,7 @@ function Footer() {
   ];
 
   return (
-    <footer className="w-full bg-black bg-opacity-80 text-white py-6 z-10">
+    <footer className="w-full bg-opacity-80 text-white py-6 z-10">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
         
         {/* Address & Contact Info */}
