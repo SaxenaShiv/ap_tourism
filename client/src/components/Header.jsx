@@ -10,7 +10,10 @@ import {
   MapPin, 
   Plane, 
   Landmark, 
-  ChevronDown 
+  ChevronDown,
+  Handshake,
+  MapPinned,
+  Tag
 } from 'lucide-react';
 import { Link } from 'react-router';
 
@@ -18,7 +21,28 @@ function Header() {
   const [languageOpen, setLanguageOpen] = useState(false);
   const [tripPlannerOpen, setTripPlannerOpen] = useState(false);
   const [placesOpen, setPlacesOpen] = useState(false);
+  const [partnersOpen, setPartnersOpen] = useState(false);
+  const [gettingToAndhraOpen, setGettingToAndhraOpen] = useState(false);
+  const [offersOpen, setOffersOpen] = useState(false);
 
+  const partnersData = [
+    { name: 'Partners login '},
+    { name: 'Market Demand & Occupancy Metrics' },
+    { name: 'Infrastructure & Accessibility' }
+  ];
+
+  const gettingToAndhraData = [
+    { name: 'Passports and visa' },
+    { name: 'Vat & Tax refund' },
+    { name: 'Accessibility', }
+  ];
+
+  const offersData = [
+    { name: 'Season Specials', description: 'Limited time offers' },
+    { name: 'Group Discounts', description: 'Travel with friends & family' },
+    { name: 'Advance Booking', description: 'Early bird benefits' }
+  ];
+  
   const placesData = {
     Beaches: [
       { name: 'Rishikonda Beach', location: 'Visakhapatnam' },
@@ -186,10 +210,143 @@ function Header() {
           </li>
 
           {/* Other Menu Items */}
-          <li><a href="#" className="hover:text-yellow-600 transition">Partners</a></li>
-          <li><a href="#" className="hover:text-yellow-600 transition">Getting To Andhra</a></li>
-          <li><a href="#" className="hover:text-yellow-600 transition">Offers</a></li>
+                 {/* Partners Dropdown */}
+                 <li 
+            className="relative group" 
+            onMouseEnter={() => setPartnersOpen(true)} 
+            onMouseLeave={() => {
+              setTimeout(() => {
+                setPartnersOpen(false);
+              }, 200);
+            }}
+          >
+            <a href="#" className="flex items-center hover:text-yellow-600 transition">
+              Partners <ChevronDown className="ml-1 w-4 h-4" />
+            </a>
+            {partnersOpen && (
+              <div 
+                className="absolute left-0 mt-2 w-64 bg-white border rounded-lg shadow-xl overflow-hidden"
+                onMouseEnter={() => setPartnersOpen(true)}
+                onMouseLeave={() => {
+                  setTimeout(() => {
+                    setPartnersOpen(false);
+                  }, 200);
+                }}
+              >
+                <div className="p-4">
+                  <div className="flex items-center mb-2">
+                    <Handshake className="mr-2 text-green-500" />
+                    <h3 className="font-bold">Our Partners</h3>
+                  </div>
+                  <ul>
+                    {partnersData.map((partner) => (
+                      <li 
+                        key={partner.name} 
+                        className="py-2 hover:bg-gray-100 rounded"
+                      >
+                        <a href="#" className="block">
+                          <span className="font-semibold">{partner.name}</span>
+                          <span className="text-sm text-gray-500 block">{partner.description}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </li>
 
+          {/* Getting to Andhra Dropdown */}
+          <li 
+            className="relative group" 
+            onMouseEnter={() => setGettingToAndhraOpen(true)} 
+            onMouseLeave={() => {
+              setTimeout(() => {
+                setGettingToAndhraOpen(false);
+              }, 200);
+            }}
+          >
+            <a href="#" className="flex items-center hover:text-yellow-600 transition">
+              Getting To Andhra <ChevronDown className="ml-1 w-4 h-4" />
+            </a>
+            {gettingToAndhraOpen && (
+              <div 
+                className="absolute left-0 mt-2 w-64 bg-white border rounded-lg shadow-xl overflow-hidden"
+                onMouseEnter={() => setGettingToAndhraOpen(true)}
+                onMouseLeave={() => {
+                  setTimeout(() => {
+                    setGettingToAndhraOpen(false);
+                  }, 200);
+                }}
+              >
+                <div className="p-4">
+                  <div className="flex items-center mb-2">
+                    <MapPinned className="mr-2 text-blue-500" />
+                    <h3 className="font-bold">Travel Options</h3>
+                  </div>
+                  <ul>
+                    {gettingToAndhraData.map((option) => (
+                      <li 
+                        key={option.name} 
+                        className="py-2 hover:bg-gray-100 rounded"
+                      >
+                        <a href="#" className="block">
+                          <span className="font-semibold">{option.name}</span>
+                          <span className="text-sm text-gray-500 block">{option.description}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </li>
+
+          {/* Offers Dropdown */}
+          <li 
+            className="relative group" 
+            onMouseEnter={() => setOffersOpen(true)} 
+            onMouseLeave={() => {
+              setTimeout(() => {
+                setOffersOpen(false);
+              }, 200);
+            }}
+          >
+            <a href="#" className="flex items-center hover:text-yellow-600 transition">
+              Offers <ChevronDown className="ml-1 w-4 h-4" />
+            </a>
+            {offersOpen && (
+              <div 
+                className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-white border rounded-lg shadow-xl overflow-hidden"
+                onMouseEnter={() => setOffersOpen(true)}
+                onMouseLeave={() => {
+                  setTimeout(() => {
+                    setOffersOpen(false);
+                  }, 200);
+                }}
+              >
+                <div className="p-4">
+                  <div className="flex items-center mb-2">
+                    <Tag className="mr-2 text-yellow-500" />
+                    <h3 className="font-bold">Special Deals</h3>
+                  </div>
+                  <ul>
+                    {offersData.map((offer) => (
+                      <li 
+                        key={offer.name} 
+                        className="py-2 hover:bg-gray-100 rounded"
+                      >
+                        <a href="#" className="block">
+                          <span className="font-semibold">{offer.name}</span>
+                          <span className="text-sm text-gray-500 block">{offer.description}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </li>
           {/* Language Dropdown */}
           <li 
             className="relative group" 

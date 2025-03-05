@@ -10,7 +10,7 @@ import Footer from "./components/Footer";
 // Layout component with persistent Header
 const Layout = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-hidden">
       <Header />
       <main className="flex-grow">
         <Outlet />

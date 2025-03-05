@@ -1,35 +1,40 @@
 import React from 'react';
-
+import visakhapatnamImg from '../assets/images/visakhapatnam.png';
+import arakuValleyImg from '../assets/images/Araku.png';
+import tirupatiImg from '../assets/images/Tirupati.png';
+import vijaywadaImg from '../assets/images/Vijaywada.png';
+import gandepalliImg from '../assets/images/Gandepalli.png';
+import lepakshiImg from '../assets/images/lepakshi.png';
 const attractionsData = [
   {
     title: "Visakhapatnam",
     description: "Coastal city with beautiful beaches and naval heritage",
-    image: "/api/placeholder/400/300?text=Visakhapatnam"
+    image: visakhapatnamImg
   },
   {
     title: "Araku Valley",
     description: "Scenic hill station known for coffee plantations",
-    image: "/api/placeholder/400/300?text=Araku+Valley"
+    image: arakuValleyImg
   },
   {
     title: "Tirupati",
     description: "Home to the famous Venkateswara Temple",
-    image: "/api/placeholder/400/300?text=Tirupati"
+    image: tirupatiImg
   },
   {
     title: "Vijaywada",
     description: "Cultural hub on the banks of Krishna River",
-    image: "/api/placeholder/400/300?text=Vijaywada"
+    image: vijaywadaImg
   },
   {
     title: "Gandepalli",
     description: "Scenic rural landscape with rich traditions",
-    image: "/api/placeholder/400/300?text=Gandepalli"
+    image: gandepalliImg
   },
   {
     title: "Lepakshi",
     description: "Historic temple town with architectural marvels",
-    image: "/api/placeholder/400/300?text=Lepakshi"
+    image: lepakshiImg
   }
 ];
 

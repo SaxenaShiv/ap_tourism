@@ -1,10 +1,13 @@
 import os
+import random
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware  # ✅ Import CORS Middleware
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from groq import Groq
 from dotenv import load_dotenv
 import textwrap
+import re
+
 # Load environment variables
 load_dotenv()
 
@@ -20,13 +23,13 @@ class UserLogin(BaseModel):
 # Initialize FastAPI
 app = FastAPI()
 
-# ✅ Configure CORS
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173","https://ap-tourism.vercel.app/"],  # Adjust this to match your frontend URL
+    allow_origins=["http://localhost:5173","https://ap-tourism.vercel.app/"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Initialize Groq Client
@@ -51,9 +54,53 @@ TRAVEL_KEYWORDS = [
     "vacation", "holiday", "tour", "sightseeing", "package", "transportation", "cost", "resort"
 ]
 
+# Greeting keywords with regex patterns
+GREETING_PATTERNS = [
+    r'\b(hi)\b',
+    r'\b(hello)\b',
+    r'\b(hey)\b',
+    r'\b(hola)\b',
+    r'\b(hi there)\b',
+    r'\b(greetings)\b',
+    r'\b(howdy)\b',
+    r'\b(good\s*(morning|afternoon|evening))\b'
+]
+
 # Request model
 class PromptRequest(BaseModel):
     prompt: str
+
+# Function to check if the prompt is a greeting
+def is_greeting(prompt: str) -> bool:
+    prompt_lower = prompt.lower().strip()
+    
+    # Use regex to match greetings more precisely
+    for pattern in GREETING_PATTERNS:
+        if re.search(pattern, prompt_lower):
+            return True
+    
+    return False
+
+# Function to generate a greeting response
+def generate_greeting_response(prompt: str) -> str:
+    prompt_lower = prompt.lower().strip()
+    
+    # Personalized greetings based on time of day or specific greeting
+    if re.search(r'\b(good\s*morning)\b', prompt_lower):
+        return "Good morning! How can I help you plan your Andhra Pradesh travel today?"
+    elif re.search(r'\b(good\s*afternoon)\b', prompt_lower):
+        return "Good afternoon! Ready to explore the beautiful destinations of Andhra Pradesh?"
+    elif re.search(r'\b(good\s*evening)\b', prompt_lower):
+        return "Good evening! Excited to assist you with your travel plans?"
+    else:
+        # Generic greeting responses
+        responses = [
+            "Hello there! I'm your Andhra Pradesh travel assistant. How can I help you today?",
+            "Hi! Ready to discover the amazing travel opportunities in Andhra Pradesh?",
+            "Greetings! I'm here to help you plan an unforgettable trip.",
+            "Hey there! Excited to assist you with your Andhra Pradesh travel plans."
+        ]
+        return random.choice(responses)
 
 # Function to check query relevance
 def is_relevant(prompt: str) -> bool:
@@ -66,6 +113,11 @@ async def read_root():
 
 @app.post("/plan-trip")
 async def plan_trip(request: PromptRequest):
+    # Check if the prompt is a greeting first
+    if is_greeting(request.prompt):
+        response = generate_greeting_response(request.prompt)
+        return {"response": response}
+
     # Check if the query is related to travel
     if not is_relevant(request.prompt):
         return {"response": "I only provide travel assistance for Andhra Pradesh."}
