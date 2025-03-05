@@ -12,13 +12,14 @@ const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow">
-        <Outlet /> {/* This is where child routes will render */}
+      <main className="flex-grow overflow-y-auto">
+        <Outlet />
       </main>
       <Footer />
     </div>
   );
 };
+
 
 
 const root = document.getElementById("root");

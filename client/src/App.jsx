@@ -40,10 +40,9 @@ function App() {
   }, [currentVideoIndex]);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen overflow-hidden">
+    <div className="fixed inset-0 w-screen h-screen overflow-hidden mt-8">
       {/* YouTube Background Video */}
       <div className="absolute inset-0 w-full h-full video-container">
-
         {YOUTUBE_BACKGROUND_VIDEOS.map((videoId, index) => (
           <div 
             key={videoId}
@@ -54,10 +53,11 @@ function App() {
             }`}
           >
             <iframe
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&loop=1&playlist=${videoId}&modestbranding=1&playsinline=1`}
+              id={`youtube-player-${videoId}`}
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&loop=1&playlist=${videoId}&modestbranding=1&playsinline=1&rel=0&disablekb=1&iv_load_policy=3&enablejsapi=1&end=-1`}
               title="Background Video"
               allow="autoplay; encrypted-media"
-              className="absolute top-1/2 left-1/2 w-[100%] h-[200%] transform -translate-x-1/2 -translate-y-1/2"
+              className="absolute top-1/2 left-1/2 w-[100%] h-[300%] transform -translate-x-1/2 -translate-y-1/2"
               style={{
                 margin: 0,
                 padding: 0,
@@ -65,15 +65,13 @@ function App() {
                 zIndex: -1,
               }}
             />
-
           </div>
         ))}
       </div>
 
-      {/* Gradient Overlay for Better Readability */}
+      {/* Rest of the code remains the same */}
       <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent"></div>
 
-      {/* Main Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6 z-40">
         <h2 
           style={{
