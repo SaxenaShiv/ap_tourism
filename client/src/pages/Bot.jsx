@@ -22,7 +22,7 @@ const AIChatBot = () => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = 'auto';
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
     }
   }, [prompt]);
 
@@ -71,23 +71,23 @@ const AIChatBot = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-6">
+      <div className="w-full max-w-4xl bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col">
         {/* Chat Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-teal-400 text-white p-4 text-center">
-          <h1 className="text-xl font-bold">Andhra Pradesh Travel Planner</h1>
-          <p className="text-sm text-white/80">Your AI Travel Companion</p>
+        <div className="bg-gradient-to-r from-blue-500 to-teal-400 text-white p-5 text-center">
+          <h1 className="text-2xl font-bold">Andhra Pradesh Travel Planner</h1>
+          <p className="text-base text-white/80">Your AI Travel Companion</p>
         </div>
 
         {/* Chat Messages Container */}
         <div 
           ref={chatContainerRef}
-          className="flex-grow overflow-y-auto p-4 space-y-4"
-          style={{ maxHeight: 'calc(100vh - 300px)' }}
+          className="flex-grow overflow-y-auto p-6 space-y-5"
+          style={{ maxHeight: 'calc(100vh - 350px)', minHeight: '400px' }}
         >
           {/* Welcome Message */}
           {messages.length === 0 && (
-            <div className="text-center text-gray-500 italic">
+            <div className="text-center text-gray-500 italic text-lg">
               Start your travel planning journey!
             </div>
           )}
@@ -104,7 +104,7 @@ const AIChatBot = () => {
             >
               <div 
                 className={`
-                  max-w-[80%] p-3 rounded-lg 
+                  max-w-[85%] p-4 rounded-xl 
                   ${message.type === 'user' 
                     ? 'bg-blue-500 text-white' 
                     : message.type === 'error'
@@ -116,10 +116,10 @@ const AIChatBot = () => {
                 {message.type === 'ai' ? (
                   <ReactMarkdown 
                     components={{
-                      h2: ({node, ...props}) => <h2 className="text-lg font-semibold text-blue-700 mt-2 mb-1" {...props} />,
-                      h3: ({node, ...props}) => <h3 className="text-base font-semibold text-blue-600 mt-1 mb-1" {...props} />,
-                      ul: ({node, ...props}) => <ul className="list-disc list-inside pl-2 space-y-1" {...props} />,
-                      ol: ({node, ...props}) => <ol className="list-decimal list-inside pl-2 space-y-1" {...props} />,
+                      h2: ({node, ...props}) => <h2 className="text-xl font-semibold text-blue-700 mt-3 mb-2" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-lg font-semibold text-blue-600 mt-2 mb-2" {...props} />,
+                      ul: ({node, ...props}) => <ul className="list-disc list-inside pl-3 space-y-2" {...props} />,
+                      ol: ({node, ...props}) => <ol className="list-decimal list-inside pl-3 space-y-2" {...props} />,
                     }}
                   >
                     {message.content}
@@ -134,16 +134,16 @@ const AIChatBot = () => {
           {/* Loading Indicator */}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-gray-100 p-3 rounded-lg flex items-center">
-                <Compass className="mr-2 animate-spin text-blue-500" />
-                <span className="text-gray-600">Generating your trip plan...</span>
+              <div className="bg-gray-100 p-4 rounded-lg flex items-center">
+                <Compass className="mr-3 animate-spin text-blue-500 w-6 h-6" />
+                <span className="text-gray-600 text-base">Generating your trip plan...</span>
               </div>
             </div>
           )}
         </div>
 
         {/* Input Area */}
-        <div className="bg-white p-4 border-t border-gray-200">
+        <div className="bg-white p-5 border-t border-gray-200">
           <form onSubmit={handleSubmit} className="relative">
             <textarea 
               ref={textareaRef}
@@ -151,15 +151,15 @@ const AIChatBot = () => {
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Describe your dream trip to Andhra Pradesh... (e.g., 'I want to explore historical sites and beaches')"
-              className="w-full p-3 pr-12 border rounded-xl focus:ring-2 focus:ring-blue-300 focus:outline-none resize-none max-h-[150px] transition-all duration-300"
+              className="w-full p-4 pr-14 border rounded-xl focus:ring-2 focus:ring-blue-300 focus:outline-none resize-none max-h-[200px] transition-all duration-300 text-base"
               rows={1}
             />
             <button 
               type="submit" 
               disabled={isLoading || !prompt.trim()}
-              className="absolute bottom-2 right-2 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 disabled:opacity-50 transition-all"
+              className="absolute bottom-3 right-3 bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600 disabled:opacity-50 transition-all"
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-6 h-6" />
             </button>
           </form>
         </div>

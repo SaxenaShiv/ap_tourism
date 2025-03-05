@@ -26,9 +26,18 @@ function Header() {
   const [offersOpen, setOffersOpen] = useState(false);
 
   const partnersData = [
-    { name: 'Partners login '},
-    { name: 'Market Demand & Occupancy Metrics' },
-    { name: 'Infrastructure & Accessibility' }
+    { 
+      name: 'Partners login',
+      path: '/partners/login'
+    },
+    { 
+      name: 'Market Demand & Occupancy Metrics',
+      path: '/market-demand'
+    },
+    { 
+      name: 'Infrastructure & Accessibility',
+      path: '/partners/infrastructure'
+    }
   ];
 
   const gettingToAndhraData = [
@@ -241,14 +250,16 @@ function Header() {
                   <ul>
                     {partnersData.map((partner) => (
                       <li 
-                        key={partner.name} 
-                        className="py-2 hover:bg-gray-100 rounded"
+                      key={partner.name} 
+                      className="py-2 hover:bg-gray-100 rounded"
+                    >
+                      <Link 
+                        to={partner.path} 
+                        className="block"
                       >
-                        <a href="#" className="block">
-                          <span className="font-semibold">{partner.name}</span>
-                          <span className="text-sm text-gray-500 block">{partner.description}</span>
-                        </a>
-                      </li>
+                        <span className="font-semibold">{partner.name}</span>
+                      </Link>
+                    </li>
                     ))}
                   </ul>
                 </div>
