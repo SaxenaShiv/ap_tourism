@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import AttractionsGrid from './components/AttractionsGrid';
-
+import { Link } from 'react-router';
 // YouTube Video IDs for Andhra Pradesh Landscapes
 const YOUTUBE_BACKGROUND_VIDEOS = [
   'cEVE6usxc-I', 
@@ -85,9 +85,9 @@ function App() {
             <a href="#explore" className="bg-yellow-500 text-black px-6 py-3 rounded-lg text-lg font-semibold hover:bg-yellow-600 transition transform hover:scale-105">
               Explore Now
             </a>
-            <a href="/ai-trip-planner" className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-black transition transform hover:scale-105">
-              Plan My Trip
-            </a>
+            <Link to="/ai-trip-planner" className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-black transition transform hover:scale-105">
+            Plan My Trip
+            </Link>
           </div>
         </div>
       </div>
