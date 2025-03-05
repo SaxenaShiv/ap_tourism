@@ -1,119 +1,167 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { MapPin, Plane, Send, Compass } from 'lucide-react';
+import { Send, Compass } from 'lucide-react';
 import { tripPlannerService } from '../../apiService';
 
 const AIChatBot = () => {
+  const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState('');
-  const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const chatContainerRef = useRef(null);
   const textareaRef = useRef(null);
+
+  // Auto-scroll to bottom of chat
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   // Auto-resize textarea
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = 'auto';
-      textarea.style.height = `${Math.max(textarea.scrollHeight, 100)}px`;
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
     }
   }, [prompt]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Reset previous state
-    setResponse('');
-    setError(null);
+    if (!prompt.trim()) return;
+
+    // Add user message
+    const userMessage = { type: 'user', content: prompt };
+    setMessages(prevMessages => [...prevMessages, userMessage]);
+    
+    // Reset input
+    setPrompt('');
     setIsLoading(true);
 
     try {
+      // Send to AI and get response
       const result = await tripPlannerService.getPlanTrip(prompt);
-      setResponse(result.response);
+      
+      // Add AI response
+      const aiMessage = { 
+        type: 'ai', 
+        content: result.response 
+      };
+      setMessages(prevMessages => [...prevMessages, aiMessage]);
     } catch (err) {
-      // Error handling
-      setError(err.message || 'An unknown error occurred');
+      // Add error message
+      const errorMessage = { 
+        type: 'error', 
+        content: err.message || 'An unknown error occurred' 
+      };
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
       console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Handle Enter key for submission
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl bg-white shadow-2xl rounded-2xl overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-teal-400 text-white p-6 flex items-center">
-          <MapPin className="mr-3 w-10 h-10" />
-          <div>
-            <h1 className="text-2xl font-bold">Andhra Pradesh Travel Planner</h1>
-            <p className="text-sm text-white/80">Your AI-powered travel companion</p>
-          </div>
+      <div className="w-full max-w-2xl bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col">
+        {/* Chat Header */}
+        <div className="bg-gradient-to-r from-blue-500 to-teal-400 text-white p-4 text-center">
+          <h1 className="text-xl font-bold">Andhra Pradesh Travel Planner</h1>
+          <p className="text-sm text-white/80">Your AI Travel Companion</p>
         </div>
 
-        {/* Content Area */}
-        <div className="p-6">
-          {/* Input Section */}
-          <form onSubmit={handleSubmit} className="mb-6">
-            <div className="relative">
-              <textarea 
-                ref={textareaRef}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Describe your dream trip to Andhra Pradesh... (e.g., 'I want to explore historical sites and beaches')"
-                className="w-full p-4 pr-12 border-2 border-blue-100 rounded-xl focus:ring-2 focus:ring-blue-300 focus:outline-none resize-none min-h-[150px] transition-all duration-300 ease-in-out"
-                required
-              />
-              <button 
-                type="submit" 
-                disabled={isLoading}
-                className="absolute bottom-3 right-3 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 disabled:opacity-50 transition-all duration-300 ease-in-out"
+        {/* Chat Messages Container */}
+        <div 
+          ref={chatContainerRef}
+          className="flex-grow overflow-y-auto p-4 space-y-4"
+          style={{ maxHeight: 'calc(100vh - 300px)' }}
+        >
+          {/* Welcome Message */}
+          {messages.length === 0 && (
+            <div className="text-center text-gray-500 italic">
+              Start your travel planning journey!
+            </div>
+          )}
+
+          {/* Message Rendering */}
+          {messages.map((message, index) => (
+            <div 
+              key={index} 
+              className={`flex ${
+                message.type === 'user' 
+                  ? 'justify-end' 
+                  : 'justify-start'
+              }`}
+            >
+              <div 
+                className={`
+                  max-w-[80%] p-3 rounded-lg 
+                  ${message.type === 'user' 
+                    ? 'bg-blue-500 text-white' 
+                    : message.type === 'error'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-gray-100 text-gray-800'
+                  }
+                `}
               >
-                {isLoading ? <Compass className="animate-spin" /> : <Send />}
-              </button>
+                {message.type === 'ai' ? (
+                  <ReactMarkdown 
+                    components={{
+                      h2: ({node, ...props}) => <h2 className="text-lg font-semibold text-blue-700 mt-2 mb-1" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-base font-semibold text-blue-600 mt-1 mb-1" {...props} />,
+                      ul: ({node, ...props}) => <ul className="list-disc list-inside pl-2 space-y-1" {...props} />,
+                      ol: ({node, ...props}) => <ol className="list-decimal list-inside pl-2 space-y-1" {...props} />,
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
+                ) : (
+                  message.content
+                )}
+              </div>
             </div>
-          </form>
+          ))}
 
-          {/* Error Handling */}
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 text-red-700">
-              <p className="font-semibold">Oops! Something went wrong</p>
-              <p className="text-sm">{error}</p>
-            </div>
-          )}
-
-          {/* Loading State */}
+          {/* Loading Indicator */}
           {isLoading && (
-            <div className="flex items-center justify-center space-x-3 text-blue-500">
-              <Plane className="animate-bounce" />
-              <span>Generating your personalized trip plan...</span>
+            <div className="flex justify-start">
+              <div className="bg-gray-100 p-3 rounded-lg flex items-center">
+                <Compass className="mr-2 animate-spin text-blue-500" />
+                <span className="text-gray-600">Generating your trip plan...</span>
+              </div>
             </div>
           )}
+        </div>
 
-          {/* Response Section */}
-          {response && (
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-xl">
-              <div className="flex items-center mb-4">
-                <Compass className="mr-3 text-blue-600" />
-                <h2 className="text-xl font-bold text-blue-800">Your Customized Trip Plan</h2>
-              </div>
-              <div className="prose max-w-full text-gray-700">
-                <ReactMarkdown 
-                  components={{
-                    h2: ({node, ...props}) => <h2 className="text-xl font-semibold text-blue-700 mt-4 mb-2" {...props} />,
-                    h3: ({node, ...props}) => <h3 className="text-lg font-semibold text-blue-600 mt-3 mb-2" {...props} />,
-                    ul: ({node, ...props}) => <ul className="list-disc list-inside pl-2 space-y-1" {...props} />,
-                    ol: ({node, ...props}) => <ol className="list-decimal list-inside pl-2 space-y-1" {...props} />,
-                    li: ({node, ...props}) => <li className="text-gray-700" {...props} />,
-                    strong: ({node, ...props}) => <strong className="font-bold text-blue-800" {...props} />,
-                    a: ({node, ...props}) => <a className="text-blue-600 hover:underline" {...props} />
-                  }}
-                >
-                  {response}
-                </ReactMarkdown>
-              </div>
-            </div>
-          )}
+        {/* Input Area */}
+        <div className="bg-white p-4 border-t border-gray-200">
+          <form onSubmit={handleSubmit} className="relative">
+            <textarea 
+              ref={textareaRef}
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Describe your dream trip to Andhra Pradesh... (e.g., 'I want to explore historical sites and beaches')"
+              className="w-full p-3 pr-12 border rounded-xl focus:ring-2 focus:ring-blue-300 focus:outline-none resize-none max-h-[150px] transition-all duration-300"
+              rows={1}
+            />
+            <button 
+              type="submit" 
+              disabled={isLoading || !prompt.trim()}
+              className="absolute bottom-2 right-2 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 disabled:opacity-50 transition-all"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </form>
         </div>
       </div>
     </div>
